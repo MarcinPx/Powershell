@@ -1,5 +1,5 @@
-﻿#This script: generating report with send/recivied emails for given date range per user. 
-#By default Exchange have retention policy for the logs which is 30 days, so that mean you can back up to 30 days.
+﻿#This script: generating report with volume of send/recivied emails for given date range per user. 
+#By default Exchange message tracking logs have retention policy which is 30 days, so that mean you can back up to 30 days.
 #This can be changed on the server by powershell commands, bear in mind that increasing retention time
 #will increase storage use on the server.
 

@@ -1,4 +1,4 @@
-﻿#this script: Is getting list of members from Distribution group
+﻿#this script: Is getting list of members from Distribution group on 365 emails
 
 
 #login details for 365

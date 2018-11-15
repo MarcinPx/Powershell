@@ -8,7 +8,7 @@ $UserCredential = Get-Credential
 $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
 Import-PSSession $Session -DisableNameChecking
 
-#getting memebers of distribution group and sending to file c:\test.csv (to change group put -identity "name of the group"
+#getting memebers of distribution group and sending to file c:\test.csv (to change group put -identity "name of the group" for the moment we are looking for "squad" group
 Get-UnifiedGroupLinks -Identity Squad -LinkType members | select Displayname, recipienttype, primarysmtpaddress | export-csv C:\test.csv
 
 #removing session

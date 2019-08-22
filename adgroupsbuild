@@ -1,0 +1,64 @@
+<#
+This scrips is building list of AD groups that listed people are members,
+can be used also to find how many people we have on given position
+
+#>
+
+$role = "User Support Specialist" #chanage requiments between "" 
+$department = "IT*"               #chanage requiments between "" 
+
+
+#looking for users that match requiments
+$users = get-aduser -Filter {title -like $role -and department -like $department} 
+
+
+
+#checking if found any users that match requiments
+if($users.Count -eq 0){
+
+write-host "No relults for $role in $department"
+}else{
+
+     write-host "List of users that match requiments for $role and $department"
+     write-host "-------------------------------------------------------------"
+
+     $users | select name
+     $number =  $users.Count
+     write-host "There is $number people with given requiments."
+
+    
+     $standardgroup = @()
+
+     #building standard list
+     $tempgroup = (get-aduser -Identity $users[0] -Properties memberof).memberof
+     foreach($temp in $tempgroup){
+
+            $standardgroup += ((Get-ADGroup $temp).name)
+
+     }
+    
+     #doing magic to create list of ad groups for given reguiments
+     foreach($user in $users){
+
+        
+     
+        $grouplist = (get-aduser -Identity $user -Properties memberof).memberof
+
+        $secondgroup = @()
+
+        foreach($group in $grouplist){
+        
+            $secondgroup += ((Get-ADGroup $group).name)
+        
+        }
+        $standardgroup += (Compare-Object -ReferenceObject $standardgroup -DifferenceObject $secondgroup -PassThru)
+
+     
+     }
+
+     write-host "---------------------------------------------------------------------------------------"
+     write-host "List of all groups that listed users belong to "
+     write-host "---------------------------------------------------------------------------------------"
+     $standardgroup | select -Unique | sort
+
+}

@@ -1,0 +1,20 @@
+$users = Get-ADUser -filter * -Properties * | select displayname, created, emailaddress, enabled, lastlogondate, logoncount, title, department, samaccountname
+ 
+$report = @()
+foreach($user in $users){
+    
+    $psobject = new-object psobject -Property @{
+    Name                    = $user.displayname
+    Created                 = $user.created
+    Email                   = $user.emailaddress
+    Enabled                 = $user.enabled
+    Lastlogon               = $user.lastlogondate
+    Logoncount              = $user.logoncount
+    Title                   = $user.title
+    Department              = $user.department
+    Login                   = $user.samaccountname
+    }
+    $report += $psobject
+
+}
+$report | Out-GridView

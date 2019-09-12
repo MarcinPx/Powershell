@@ -1,44 +1,155 @@
-<#
-This scrips is building list of AD groups that listed people are members,
-can be used also to find how many people we have on given position
+#this script can be used to build list of AD groups that listed people belongs to and matching requiments(query)
+#or to find how many people we have in given department
+#or to find how many people work with this same title
 
-#>
 
-$role = "User Support Specialist" #chanage requiments between "" 
-$department = "IT*"               #chanage requiments between "" 
 
+#creating windows form to run the script in gui
+
+$main_form = New-Object System.Windows.Forms.Form
+$main_form.Text = "List of AD groups that users belong to and matching requiments"
+$main_form.Width = 1050
+$main_form.Height = 840
+$main_form.AutoSize = $true
+
+
+$label = New-Object System.Windows.Forms.Label
+$label.AutoSize = $true
+$label.Location = New-Object System.Drawing.Point(10, 20)
+$label.Text = "Please provide title"
+$main_form.Controls.Add($label)
+
+
+$label2 = New-Object System.Windows.Forms.Label
+$label2.AutoSize = $true
+$label2.Location = New-Object System.Drawing.Point(10, 80)
+$label2.Text = "Please provide department"
+$main_form.Controls.Add($label2)
+
+
+$label3 = New-Object System.Windows.Forms.Label
+$label3.AutoSize = $true
+$label3.Location = New-Object System.Drawing.Point(10, 150)
+$label3.text = "List of users matching requiments"
+$main_form.Controls.Add($label3)
+
+
+$label4 = New-Object System.Windows.Forms.Label
+$label4.AutoSize = $true
+$label4.Location = New-Object System.Drawing.Point(520, 150)
+$label4.text = "List of AD groups that listed users belongs to"
+$main_form.Controls.Add($label4)
+
+
+$textbox = New-Object System.Windows.Forms.TextBox
+$textbox.size = New-Object System.Drawing.Size(200, 10)
+$textbox.Location = New-Object System.Drawing.Point(10, 50)
+$main_form.Controls.Add($textbox)
+
+
+$textbox2 = New-Object System.Windows.Forms.TextBox
+$textbox2.size = New-Object System.Drawing.Size(200, 10)
+$textbox2.Location = New-Object System.Drawing.Point(10, 110)
+$main_form.Controls.Add($textbox2)
+
+
+$button = New-Object System.Windows.Forms.Button
+$button.Size = New-Object System.Drawing.Size(100, 50)
+$button.Text = "Check"
+$button.Location = New-Object System.Drawing.Point(435, 50)
+$main_form.Controls.Add($button)
+
+
+$button2 = New-Object System.Windows.Forms.Button
+$button2.Size = New-Object System.Drawing.Size(100, 50)
+$button2.Text = "Help"
+$button2.Location = New-Object System.Drawing.Point(735, 50)
+$main_form.Controls.Add($button2)
+
+
+$richbox = New-Object System.Windows.Forms.RichTextBox
+$richbox.Size = New-Object System.Drawing.size(450, 580)
+$richbox.Location = New-Object System.Drawing.Point(10, 180)
+$main_form.Controls.Add($richbox)
+
+
+$richbox2 = New-Object System.Windows.Forms.RichTextBox
+$richbox2.Size = New-Object System.Drawing.size(450, 580)
+$richbox2.Location = New-Object System.Drawing.Point(520, 180)
+$main_form.Controls.Add($richbox2)
+
+
+#what program will do when we click help button
+$button2.add_click(
+
+    {
+        $wshell = New-Object -ComObject Wscript.shell
+        $wshell.popup("Program to work need to be run on DC with admin rights.If you want to select all, type * in title and department fields. Or if you want variation type *it*, this will look in all departments that name contain IT. Or starting with IT and so on, type IT*. Fields title and department can not be empty. Program may slow down, that depends on how many users match requiments or how many accounts hold AD.",0,"Help", 32)
+
+    }
+
+
+)
+
+#what we do when we hit button check
+$button.add_click(
+{
+#taking information from textboxes
+$role = $textbox.text
+$department = $textbox2.Text
 
 #looking for users that match requiments
-$users = get-aduser -Filter {title -like $role -and department -like $department} 
+if($role -eq "" -or $department -eq ""){
 
+$richbox.Text = "No relults, if you want to select all, type *. Or if you want variation type *it*, this will look in all departments that name contain IT. Or starting with IT and so on, type IT*. Fields title and department can not be empty."
+
+}else{
+
+$users = get-aduser -Filter {title -like $role -and department -like $department} -ErrorAction SilentlyContinue
+$number = $users.count
+}
 
 
 #checking if found any users that match requiments
 if($users.Count -eq 0){
 
-write-host "No relults for $role in $department"
+
 }else{
 
-     write-host "List of users that match requiments for $role and $department"
-     write-host "-------------------------------------------------------------"
+     
+     $string = ""
+     $string2 = ""
 
-     $users | select name
-     $number =  $users.Count
-     write-host "There is $number people with given requiments."
+      
+     $userlist = $users | select name
+     Foreach($u in $userlist){
+     
+     $string += ($u.name).tostring()
+     $string += "`n"
+     
+     }
+     $string += "There are $number users that match requiments."
+     $richbox.Text = $string
 
-    
+     
      $standardgroup = @()
 
-     #building standard list
+     #building standard group list
      $tempgroup = (get-aduser -Identity $users[0] -Properties memberof).memberof
+
+  
+
      foreach($temp in $tempgroup){
 
             $standardgroup += ((Get-ADGroup $temp).name)
+            
 
      }
     
      #doing magic to create list of ad groups for given reguiments
+    
      foreach($user in $users){
+        
 
         
      
@@ -52,13 +163,27 @@ write-host "No relults for $role in $department"
         
         }
         $standardgroup += (Compare-Object -ReferenceObject $standardgroup -DifferenceObject $secondgroup -PassThru)
-
+        
      
      }
 
-     write-host "---------------------------------------------------------------------------------------"
-     write-host "List of all groups that listed users belong to "
-     write-host "---------------------------------------------------------------------------------------"
-     $standardgroup | select -Unique | sort
+     
+     $main = $standardgroup | select -Unique | sort
+
+     
+
+     foreach($m in $main){
+     
+     $string2 += $m.tostring()
+     $string2 += "`n"
+
+     
+     }
+     $richbox2.Text = $string2
+
+} 
 
 }
+)
+
+$main_form.ShowDialog()

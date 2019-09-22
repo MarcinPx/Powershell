@@ -2,7 +2,7 @@
 
 $tempgroup = (get-aduser -Identity djudge -Properties memberof).memberof #in the field identity write login of user from who we should to copy ad groups
 
-$users = ("kgrocock", "sdocherty", "aalleoni", "rmoriarty", "bobeirne" ) # in brackets write logins of users that you want to be members of the groups that previous login have
+$users = ("jsmith", "jmurphy" ) # in brackets write logins of users that you want to be members of the groups that previous login have
 foreach($temp in $tempgroup){
 
 ((Get-ADGroup $temp).name)

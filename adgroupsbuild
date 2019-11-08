@@ -1,4 +1,4 @@
-#this script can be used to build list of AD groups that listed people belongs to and matching requiments(query)
+#this script is GUI, can be used to build list of AD groups that listed people belongs to and matching requiments(query)
 #or to find how many people we have in given department
 #or to find how many people work with this same title
 

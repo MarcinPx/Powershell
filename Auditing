@@ -1,3 +1,4 @@
+#script is pulling informations about users from AD and displaying in Grid view
 $users = Get-ADUser -filter * -Properties * | select displayname, created, emailaddress, enabled, lastlogondate, logoncount, title, department, samaccountname
  
 $report = @()

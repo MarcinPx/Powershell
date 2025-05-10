@@ -4,4 +4,4 @@ Azureexchangegettingmembersofdistributiongroup.ps1 - this script: Is getting lis
 
 adgroupsbuild.ps1 - this script is GUI, can be used to build list of AD groups that listed people belongs to and matching requiments(query), or to find how many people we have in given department, or to find how many people work with this same title  
 
-
+copingadgroups.ps1 - Script is coping AD groups from user and add this groups to listed logins  

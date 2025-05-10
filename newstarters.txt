@@ -1,0 +1,26 @@
+PowerShell script which is creating or reactivating AD accounts and
+mailboxes in Active Directory, Exchange. Script will be scheduled by Windows Scheduler to
+run every 24h on Active Directory Server. Script on beginning is establishing connection with
+Exchange Server than is loading few csv’s files and creating objects of this files: csv with
+new starters; csv with existing users which were working before for the company; all roles
+csv’s files which contain list of AD security groups for each role, for the moment were 2 csv’s
+implemented for 2 roles: ‘customersupport.csv’ and ‘analyst.csv’. Then is starting loop over
+‘newusers.csv’ and start to creatiOU (AD accounts for users listed in ‘newusers.csv’, it is
+setting this properties for each user: full name; designated OU(folder in active directory for
+users accounts); given name; surname; login; password; set that password need to be changed
+at first login; user title; company name; display name; department; set account as enabled;
+putting description for the account; principal name in the system; line manager. Then is
+checking what role user have and assign groups listed in role csv, after is going to sleep for
+100 seconds for all this information to be repopulated to all systems (like different Active
+Directory servers, Exchange servers that are interconnected). Then is starting to create
+mailbox and setting these properties: display name, primary smtp (email address), other
+information’s for mailbox setting are pulled from Active Directory based on login. Once is
+finishing iterating for all listed users in ‘newusers.csv’ is starting the loop through
+‘existinguser.csv’ and doing these tasks for each user: enabling account; resetting password;
+set that password need to be changed at first login; enabling MAPI on mailbox which is the
+communication that is needed for outlook application to work. Once is finishing with
+iterating through ‘existinguser.csv’ is creating new file ‘createdusers.csv’ with all details for
+new starters which will be use by another Python script in next task. At the end script is doing
+some cleaning: deleting files that were done ‘newusers.csv and ‘existinguser.csv’; placing in
+this same location new empty files ‘newusers.csv’, ‘existinguser.csv’ for future process by IT
+department.

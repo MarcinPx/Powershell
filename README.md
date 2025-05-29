@@ -10,5 +10,5 @@ exchangegetstatisticemails.ps1 - This script: generating report with volume of s
 
 nasapictureofthedayAPI.ps1 - Script is connecting to nasa api, taking location of picture of the day, and is displaying this in webform webbrowser
 
-ListBitLocker.ps1 script is listing all devices with their bitlocker recovery keys for selected OU in Active Directory
+ListBitLocker.ps1 script is saving all devices with their bitlocker recovery keys to csv file for selected OU in Active Directory
 
